@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.11: http://docutils.sourceforge.net/" />
+<title>mfu : MediaFire Uploader</title>
+<style type="text/css">
+
+/*
+    Buttondown
+    A Markdown/MultiMarkdown/Pandoc HTML output CSS stylesheet
+    Author: Ryan Gray
+    Date: 15 Feb 2011
+    Revised: 21 Feb 2012
+   
+    General style is clean, with minimal re-definition of the defaults or 
+    overrides of user font settings. The body text and header styles are 
+    left alone except title, author and date classes are centered. A Pandoc TOC 
+    is not printed, URLs are printed after hyperlinks in parentheses. 
+    Block quotes are italicized. Tables are lightly styled with lines above 
+    and below the table and below the header with a boldface header. Code 
+    blocks are line wrapped. 
+
+    All elements that Pandoc and MultiMarkdown use should be listed here, even 
+    if the style is empty so you can easily add styling to anything.
+    
+    There are some elements in here for HTML5 output of Pandoc, but I have not 
+    gotten around to testing that yet.
+*/
+
+/* NOTES:
+
+    Stuff tried and failed:
+    
+    It seems that specifying font-family:serif in Safari will always use 
+    Times New Roman rather than the user's preferences setting.
+    
+    Making the font size different or a fixed value for print in case the screen 
+    font size is making the print font too big: Making font-size different for 
+    print than for screen causes horizontal lines to disappear in math when using 
+    MathJax under Safari.
+*/
+
+/* ---- Front Matter ---- */
+
+/* Pandoc header DIV. Contains .title, .author and .date. Comes before div#TOC. 
+   Only appears if one of those three are in the document.
+*/
+
+div#header, header
+    {
+    /* Put border on bottom. Separates it from TOC or body that comes after it. */
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 0.5em;
+    }
+
+.title /* Pandoc title header (h1.title) */
+    {
+    text-align: center;
+    }
+
+.author, .date /* Pandoc author(s) and date headers (h2.author and h3.date) */
+    {
+    text-align: center;
+    }
+
+/* Pandoc table of contents DIV when using the --toc option.
+   NOTE: this doesn't support Pandoc's --id-prefix option for #TOC and #header. 
+   Probably would need to use div[id$='TOC'] and div[id$='header'] as selectors.
+*/
+
+div#TOC, nav#TOC
+    {
+    /* Put border on bottom to separate it from body. */
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 0.5em;
+    }
+
+@media print
+    {
+    div#TOC, nav#TOC
+        {
+        /* Don't display TOC in print */
+        display: none;
+        }
+    }
+
+/* ---- Headers and sections ---- */
+
+h1, h2, h3, h4, h5, h6
+{
+    font-family: "Helvetica Neue", Helvetica, "Liberation Sans", Calibri, Arial, sans-serif; /* Sans-serif headers */
+    color: darkblue;
+
+    /* font-family: "Liberation Serif", "Georgia", "Times New Roman", serif; /* Serif headers */
+
+    page-break-after: avoid; /* Firefox, Chrome, and Safari do not support the property value "avoid" */
+}
+
+/* Pandoc with --section-divs option */
+
+div div, section section /* Nested sections */
+    {
+    margin-left: 2em; /* This will increasingly indent nested header sections */
+    }
+
+p {}
+
+blockquote
+    { 
+    font-style: italic;
+    }
+
+li /* All list items */
+    {
+    }
+
+li > p /* Loosely spaced list item */
+    {
+    margin-top: 1em; /* IE: lack of space above a <li> when the item is inside a <p> */
+    }
+
+ul /* Whole unordered list */
+    {
+    }
+
+ul li /* Unordered list item */
+    {
+    }
+
+ol /* Whole ordered list */
+    {
+    }
+
+ol li /* Ordered list item */
+    {
+    }
+
+hr {}
+
+/* ---- Some span elements --- */
+
+sub /* Subscripts. Pandoc: H~2~O */
+    {
+    }
+
+sup /* Superscripts. Pandoc: The 2^nd^ try. */
+    {
+    }
+
+em /* Emphasis. Markdown: *emphasis* or _emphasis_ */
+    {
+    }
+
+em > em /* Emphasis within emphasis: *This is all *emphasized* except that* */
+  {
+    font-style: normal;
+    color: darkgreen;
+  }
+
+strong /* Markdown **strong** or __strong__ */
+    {
+      color: darkgreen;
+    }
+
+/* ---- Links (anchors) ---- */
+
+a /* All links */
+    {
+    /* Keep links clean. On screen, they are colored; in print, they do nothing anyway. */
+    text-decoration: none;
+    }
+
+@media screen
+    {
+    a:hover
+        {
+        /* On hover, we indicate a bit more that it is a link. */
+        text-decoration: underline;
+        }
+    }
+
+@media print
+    {
+    a   {
+        /* In print, a colored link is useless, so un-style it. */
+        color: black;
+        background: transparent;
+        }
+
+    a[href^="http://"]:after, a[href^="https://"]:after
+        {
+        /* However, links that go somewhere else, might be useful to the reader,
+           so for http and https links, print the URL after what was the link 
+           text in parens
+        */
+        content: " (" attr(href) ") ";
+        font-size: 90%;
+        }
+    }
+
+/* ---- Images ---- */
+
+img
+    {
+    /* Let it be inline left/right where it wants to be, but verticality make 
+       it in the middle to look nicer, but opinions differ, and if in a multi-line 
+       paragraph, it might not be so great. 
+    */
+    vertical-align: middle;
+    }
+
+div.figure /* Pandoc figure-style image */
+    {
+    /* Center the image and caption */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-style: italic;
+    }
+
+p.caption /* Pandoc figure-style caption within div.figure */
+    {
+    /* Inherits div.figure props by default */
+    }
+
+/* ---- Code blocks and spans ---- */
+
+pre, code
+  {
+    background-color: lightgray;
+    color: darkblue;
+    /* BEGIN word wrap */
+    /* Need all the following to word wrap instead of scroll box */
+    /* This will override the overflow:auto if present */
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+    /* END word wrap */
+  }
+
+pre /* Code blocks */
+    {
+    /* Distinguish pre blocks from other text by more than the font with a background tint. */
+    padding: 0.5em; /* Since we have a background color */
+    border-radius: 4px; /* Softens it */
+    /* Give it a some definition */
+    /* Set it off left and right, seems to look a bit nicer when we have a background */
+    margin-left:  0.5em;
+    margin-right: 0.5em;
+    }
+
+@media screen
+    {
+    pre
+        {
+        /* On screen, use an auto scroll box for long lines, unless word-wrap is enabled */
+        white-space: pre;
+        overflow: auto;
+        /* Dotted looks better on screen and solid seems to print better. */
+        border: 1px dotted #777;
+        }
+    }
+
+code /* All inline code spans */
+    {
+    }
+
+p > code, li > code /* Code spans in paragraphs and tight lists */
+    {
+    /* Pad a little from adjacent text */
+    padding-left:  2px;
+    padding-right: 2px;
+    }
+    
+li > p code /* Code span in a loose list */
+    {
+    /* We have room for some more background color above and below */
+    padding: 2px;
+    }
+
+/* ---- Math ---- */
+
+span.math /* Pandoc inline math default and --jsmath inline math */
+    {
+    /* Tried font-style:italic here, and it messed up MathJax rendering in some browsers. Maybe don't mess with at all. */
+    }
+    
+div.math /* Pandoc --jsmath display math */
+    {
+    }
+    
+span.LaTeX /* Pandoc --latexmathml math */
+    {
+    } 
+
+eq /* Pandoc --gladtex math */
+    {
+    } 
+
+/* ---- Tables ---- */
+
+/*  A clean textbook-like style with horizontal lines above and below and under 
+    the header. Rows highlight on hover to help scanning the table on screen.
+*/
+
+table
+    {
+    border-collapse: collapse;
+    border-spacing: 0; /* IE 6 */
+
+    border-bottom: 2pt solid #000;
+    border-top: 2pt solid #000; /* The caption on top will not have a bottom-border */
+
+    /* Center */
+    margin-left: auto;
+    margin-right: auto;
+    }
+    
+thead /* Entire table header */
+    {
+    border-bottom: 1pt solid #000;
+    background-color: #eee; /* Does this BG print well? */
+    }
+
+tr.header /* Each header row */
+    {
+    } 
+
+tbody /* Entire table  body */
+    {
+    }
+
+/* Table body rows */
+
+tr  {
+    }
+tr.odd:hover, tr.even:hover /* Use .odd and .even classes to avoid styling rows in other tables */
+    {
+    background-color: #eee;
+    }
+    
+/* Odd and even rows */
+tr.odd {}
+tr.even {}
+
+td, th /* Table cells and table header cells */
+    { 
+    vertical-align: top; /* Word */
+    vertical-align: baseline; /* Others */
+    padding-left:   0.5em;
+    padding-right:  0.5em;
+    padding-top:    0.2em;
+    padding-bottom: 0.2em;
+    }
+    
+/* Removes padding on left and right of table for a tight look. Good if thead has no background color*/
+/*
+tr td:last-child, tr th:last-child
+    {
+    padding-right: 0;
+    }
+tr td:first-child, tr th:first-child 
+    {
+    padding-left: 0;
+    }
+*/
+
+th /* Table header cells */
+    {
+    font-weight: bold; 
+    }
+
+tfoot /* Table footer (what appears here if caption is on top?) */
+    {
+    }
+
+caption /* This is for a table caption tag, not the p.caption Pandoc uses in a div.figure */
+    {
+    caption-side: top;
+    border: none;
+    font-size: 0.9em;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 0.3em; /* Good for when on top */
+    padding-bottom: 0.2em;
+    }
+
+/* ---- Definition lists ---- */
+
+dl /* The whole list */
+    {
+    border-top: 2pt solid black;
+    padding-top: 0.5em;
+    border-bottom: 2pt solid black;
+    }
+
+dt /* Definition term */
+    {
+    font-weight: bold;
+    }
+
+dd+dt /* 2nd or greater term in the list */
+    {
+    border-top: 1pt solid black;
+    padding-top: 0.5em;
+    }
+    
+dd /* A definition */
+    {
+    margin-bottom: 0.5em;
+    }
+
+dd+dd /* 2nd or greater definition of a term */
+    {
+    border-top: 1px solid black; /* To separate multiple definitions */
+    }
+    
+/* ---- Footnotes ---- */
+
+a.footnote, a.footnoteRef { /* Pandoc, MultiMarkdown footnote links */
+    font-size: small; 
+    vertical-align: text-top;
+}
+
+a[href^="#fnref"], a.reversefootnote /* Pandoc, MultiMarkdown, ?? footnote back links */
+    {
+    }
+
+@media print
+    {
+    a[href^="#fnref"], a.reversefootnote /* Pandoc, MultiMarkdown */
+        {
+        /* Don't display these at all in print since the arrow is only something to click on */
+        display: none;
+        }
+    }
+    
+div.footnotes /* Pandoc footnotes div at end of the document */
+    {
+    }
+    
+div.footnotes li[id^="fn"] /* A footnote item within that div */
+    {
+    }
+
+/* You can class stuff as "noprint" to not print. 
+   Useful since you can't set this media conditional inside an HTML element's 
+   style attribute (I think), and you don't want to make another stylesheet that 
+   imports this one and adds a class just to do this.
+*/
+
+@media print
+    {
+    .noprint
+        {
+        display:none;
+        }
+    }
+
+</style>
+</head>
+<body>
+<div class="document" id="mfu-mediafire-uploader">
+<h1 class="title">mfu : MediaFire Uploader</h1>
+
+<div class="section" id="installation">
+<h1>Installation</h1>
+<p><strong>mfu</strong> uses two libraries: <strong>libCurl</strong> and <strong>libSsl</strong>. We need to
+make sure that these are installed first.</p>
+<div class="section" id="libcurl">
+<h2>libCurl</h2>
+<p>If it's not already installed, you can - e.g. in Ubuntu - install
+<strong>libCurl</strong> using the follow command in the shell:</p>
+<pre class="code bash literal-block">
+sudo apt-get install libcurl3
+</pre>
+</div>
+<div class="section" id="libssl">
+<h2>libSsl</h2>
+<p>Make sure <strong>libssl.so</strong> is available in the library path.
+On Ubuntu I had to make a link to the library to make it available:</p>
+<pre class="code bash literal-block">
+sudo ln -s /lib/x86_64-linux-gnu/libssl.so.1.0.0 /usr/lib/libssl.so
+</pre>
+</div>
+<div class="section" id="mfu">
+<h2>mfu</h2>
+<p>Copy <tt class="docutils literal">mfu</tt> somewhere in the path, so it can be executed, e.g:</p>
+<pre class="code bash literal-block">
+cp mfu usrbin
+</pre>
+</div>
+</div>
+<div class="section" id="usage">
+<h1>Usage</h1>
+<p>You can run <strong>mfu</strong> as-is, without any parameters.
+But you need to create a configuration file first (see below).</p>
+<pre class="code bash literal-block">
+mfu
+</pre>
+</div>
+<div class="section" id="mediafire-account">
+<h1>MediaFire Account</h1>
+<p><strong>mfu</strong> uses <em>MediaFire</em>, so you need a MediaFire Account.
+From that account we need the <em>username</em> and <em>password</em>, e.g.:</p>
+<ul class="simple">
+<li><strong>Username</strong> : <em>gniffel</em></li>
+<li><strong>Password</strong> : <em>5i2a1o</em></li>
+</ul>
+<p>You also need to enable the <em>API</em> access to your files for <strong>mfu</strong>.
+For that, it needs an <em>App id</em> and an <em>API Key</em>.</p>
+<p>You can create these in your MediaFire configuration page on the web:
+<strong>Account Settings</strong> &gt;&gt; <strong>Developers</strong> &gt;&gt; <strong>Create New Application</strong></p>
+<p>This will give us the <em>App ID</em> and the <em>API Key</em>, e.g.:</p>
+<ul class="simple">
+<li><strong>App ID</strong>  : <em>47581</em></li>
+<li><strong>API Key</strong> : <em>ei96jj7lyxoaesfj61an33wtwxj7denpddo2a4ff</em></li>
+</ul>
+</div>
+<div class="section" id="profiles">
+<h1>Profiles</h1>
+<p><strong>mfu</strong> uses <em>profiles</em>. A <em>profile</em> contains the information about
+which directories need to be uploaded, on which MediaFire account,
+using how many upload threads, the password, ...
+It also holds some information about the files and directories
+that are already uploaded.
+You can have multiple profiles. If you only need one, just use the
+<em>main</em> profile.</p>
+<p><em>Profiles</em> are stored in directory <tt class="docutils literal"><span class="pre">~/.mfu</span></tt>.
+The default profile is <strong>main</strong>.
+So, the default profile directory is <tt class="docutils literal"><span class="pre">~/.mfu/main</span></tt>.
+In each profile directory, a <tt class="docutils literal">config</tt> file can be placed which
+contains some parameter values (see below).
+The profile directory is also used to store cache files, which contains
+cached information about files and directories that where backuped.</p>
+</div>
+<div class="section" id="command-line">
+<h1>Command Line</h1>
+<p><strong>mfu</strong> takes its parameter from the profile configuration file and
+from the command line. The first parameter is the name of the
+<em>profile</em>. If that is ommitted, it takes <em>main</em> as the profile.</p>
+<p>e.g.: <tt class="docutils literal">mfu</tt> : uses the default profile <em>main</em> and reads the parameters
+from <tt class="docutils literal">~.mfumainconfig</tt></p>
+<p>e.g.: <tt class="docutils literal">mfu profilename</tt> : uses the profile <em>profilename</em> and reads the
+parameters from <tt class="docutils literal">~.mfuprofilenameconfig</tt></p>
+<p>It is possible to have parameters on the <em>command line</em>. These take
+the form <tt class="docutils literal"><span class="pre">--parameter:value</span></tt>. Parameters on the <em>command line</em>
+override the ones in the configuration file.</p>
+<p>e.g.
+<tt class="docutils literal">mfu profilename <span class="pre">--loglevel:6</span></tt> : uses the profile <em>profilename</em> but
+uses a different <em>loglevel</em>.</p>
+</div>
+<div class="section" id="supported-parameters">
+<h1>Supported Parameters</h1>
+<p>Parameters can be put in the <em>config</em> file or on the command line.
+<strong>mfu</strong> first reads the <em>config</em> file, then the command line parameters.
+So, command line parameter override the ones in the <em>config</em> file.</p>
+<p>An exception to this is the <strong>dir</strong> parameter. A <em>dir</em> parameter on the
+command line is treated the same as the multiple <em>dir</em> parameters in the
+config file: it will be added to the list of directories to be uploaded.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">parameter</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>email, e-mail</td>
+<td>the MediaFire email for your account</td>
+</tr>
+<tr><td>passwd, password</td>
+<td>the password for your
+MediaFire account</td>
+</tr>
+<tr><td>appid, app-id</td>
+<td>the AppID for the application access
+on your MediaFire account</td>
+</tr>
+<tr><td>apikey, api-key</td>
+<td>the AppKey for the application
+access on your MediaFire account</td>
+</tr>
+<tr><td>dir, directory</td>
+<td>A directory that needs to be
+uploaded. This can occur
+multiple times to upload multiple
+directories.</td>
+</tr>
+<tr><td>quick</td>
+<td><em>on</em> of <em>off</em>
+See description below</td>
+</tr>
+<tr><td>uploaders, nr-of-uploaders</td>
+<td><strong>mfu</strong> uses multiple parallell
+threads to upload files.
+By default it uses 4 upload threads.
+You can change this (up to 16
+threads) using this parameter.</td>
+</tr>
+<tr><td>loglevel, log-level</td>
+<td>Controls the amount of information
+shown by <strong>mfu</strong>. It is a number
+between 0 and 9. See description
+below.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="quick-on-or-off">
+<h1>quick : <tt class="docutils literal">on</tt> or <tt class="docutils literal">off</tt></h1>
+<p>In default mode, <strong>mfu</strong> scans and checks all directories and files.
+This includes a check against the MediaFire server to see if a file was
+changed (deleted, replaced, renamed, ...) on the server.  Also
+directories are checked against the server to see if they still exists.
+This makes the uploads very safe, but it can take a lot of time if there
+are lots of files and directories.</p>
+<p>If you are sure that nothing has changed on the MediaFire server since
+the last upload - e.g. because <strong>mfu</strong> is the only application touching
+these files - it is safe to enable the <em>quick</em> mode. In this case,
+<strong>mfu</strong> will check the local files and directories against the caches
+(stored in the <em>profile</em> folder) to see if they need to be uploaded.
+This makes incremental uploads <em>a lot</em> faster.</p>
+</div>
+<div class="section" id="loglevel-or-log-level">
+<h1>loglevel or log-level</h1>
+<p>With this parameter the amount of progress  information that is shown
+can be controlled.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">loglevel</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>0</td>
+<td>nothing is shown</td>
+</tr>
+<tr><td>1</td>
+<td>errors are shown</td>
+</tr>
+<tr><td>2</td>
+<td>uploaded files are shown
+(default)</td>
+</tr>
+<tr><td>3</td>
+<td>directories that are being created/checked are shown
+incremental uploads of big files are shown</td>
+</tr>
+<tr><td>9</td>
+<td>extensive debug information is shown</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="examples">
+<h1>Examples</h1>
+<p>the  <em>config</em> file I use to upload my backups</p>
+<pre class="code literal-block">
+&gt;&gt; cat ~/.mfu/main/config
+
+appid     : 47581
+apikey    : ei96jj7lyxoaesfj61an33wtwxj7denpddo2a4ff
+email     : name&#64;testing.net
+passwd    : p&#64;ssw0rd
+uploaders : 8
+loglevel  : 3
+quick     : on
+dir       : /backups
+</pre>
+<p>the <em>config</em> file I use to upload my media files</p>
+<pre class="code literal-block">
+&gt;&gt; cat ~/.mfu/media/config
+
+appid     : 47581
+apikey    : ei96jj7lyxoaesfj61an33wtwxj7denpddo2a4ff
+email     : name&#64;testing.net
+passwd    : p&#64;ssw0rd
+quick     : on
+dir       : /home/user/Music
+dir       : /home/user/Videoss
+dir       : /home/user/Pictures
+</pre>
+</div>
+<div class="section" id="build-instructions">
+<h1>Build Instructions</h1>
+<p><strong>mfu</strong> is written in <strong>nim</strong>.
+To build <strong>mfu</strong> yourself, you first need to instal <strong>nim</strong>.
+(see <a class="reference external" href="http://nim-lang.org/">nim-lang.org</a>)</p>
+<p>You can find installation instructions at:
+<a class="reference external" href="http://nim-lang.org/download.html">nim-lang.org/download</a></p>
+<p><strong>mfu</strong> uses some of the latest features from <strong>nim</strong> that
+only reside in de development branch (for the moment).
+So you need to use the <em>devel</em> branch to build it.</p>
+<p>In short ...</p>
+<pre class="code bash literal-block">
+git clone -b devel git://github.com/Araq/Nim.git
+<span class="name builtin">cd </span>Nim
+git clone -b devel --depth 1 git://github.com/nim-lang/csources
+<span class="name builtin">cd </span>csources <span class="operator">&amp;&amp;</span> sh build.sh
+<span class="name builtin">cd</span> ..
+bin/nim c koch
+./koch boot -d:release
+
+sudo ./koch install /usr/bin
+</pre>
+<p>All of the <em>mfu</em> source code resides in one file: <em>mfu.nim</em>.
+Once <strong>nim</strong> is installed, you can compile <em>mfu.nim</em>
+into an executable using:</p>
+<pre class="code bash literal-block">
+nim c -d:release --threads:on mfu.nim
+</pre>
+<p>If you want to make a very tiny executable, you can optionally run:</p>
+<pre class="code bash literal-block">
+strip mfu
+upx -q --best mfu
+</pre>
+</div>
+</div>
+</body>
+</html>
